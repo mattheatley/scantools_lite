@@ -142,7 +142,7 @@ STEP 6 - Find Outliers
 		percentile = <Integer for outlier percentile threshold>
 
 
-		Either/Or					# Defaults
+		Either/Or					Defaults
 
 		pops = <List of population names>		# None		
 		metrics_prefix = <calcbpm() metrics prefix>	# default calcbpm() prefix	    
@@ -176,9 +176,7 @@ Most steps have further options that control general behaviour:
 		debug = <True/False>				# False
 
 
-N.B. if both 
-
-N.B. keep_intermediates & use_scratch are mutually exclusive options; if both are provided then intermediate files are retained along with outputs in the same directory.
+N.B. keep_intermediates & use_scratch are mutually exclusive options; if both are provided then the scratch directory is not used & intermediate files are retained in the same directory as the ouputs.
 
 In-built stage-specific SLURM directives are used at stages where tasks are submitted to the HPCC. If required the user can change these via further options. A Conda environments can also be specified if any software requirements have been installed this way.
 
