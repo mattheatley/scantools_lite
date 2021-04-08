@@ -12,7 +12,7 @@
 #                                                                   #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-# February 2021 release
+# April 2021 release
 # software; bcftools (v1.9), gatk (v3.8), bedtools (v2.29.2)
 import os, sys, subprocess, pandas, math, datetime, time, glob, re
 
