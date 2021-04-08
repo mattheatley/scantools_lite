@@ -2,11 +2,11 @@ READ ME
 
 This software calculates window-based population genetics metrics on a SLURM cluster.
 
-It utilises the framework of ScanTools by Patrick Monnahan (https://github.com/pmonnahan/ScanTools) but has been re-worked to reduce code, fix bugs & optimise features. 
-Whilst there are subtle differences in usage the majority is identical; users are therfore advised to review the more detailed original instructions as this is not covered here.
-However, specific usage examples can be found in the 'run_scan.py' script.
+It utilises the framework of ScanTools by Patrick Monnahan (https://github.com/pmonnahan/ScanTools) but has been re-worked to reduce code, fix bugs & optimise various features. 
+Whilst there are subtle differences in usage the majority is identical; users are therfore advised to review the more detailed instructions of the original as this will not be covered here.
+Some specific usage examples can however be found in the 'run_scan.py' script.
 
-As of yet ScanToolsLite includes only the basic features & repolarized tables are not supported. 
+As of yet ScanToolsLite includes only the core features & does not support repolarized tables. 
 
 
 Requirements
@@ -34,7 +34,7 @@ STEP 1 - Create a ScanToolsLite Object
 		vcf_dir = </path/to/vcf_dir>
 
 N.B. 
-- If no PopKey.csv file is found within the working directory then an interactive prompt will guide users at this point to create its template.
+- If no PopKey.csv file is found within the working directory then at this point an interactive prompt will guide users in creating its template (to be completed manually).
 
 
 A non-exhaustive list of the most useful methods for ScanToolsLite objects:
@@ -96,7 +96,7 @@ STEP 3 - Split VCFs
 
 
 N.B.
-Either a path to GenomeAnalysisTK.jar or a Conda environment with GATK installed must be specified; if both are provided then the 'gatk_path' option is used.
+- Either a path to GenomeAnalysisTK.jar or a Conda environment with GATK installed must be specified; if both are provided then the 'gatk_path' option is used.
 
 
 
