@@ -1,0 +1,207 @@
+# scantools_lite
+
+READ ME
+
+This software calculates window-based population genetics metrics on a SLURM cluster.
+
+It utilises the framework of ScanTools by Patrick Monnahan (https://github.com/pmonnahan/ScanTools) but has been re-worked to reduce code, fix bugs & optimise various features. 
+Whilst there are subtle differences in usage the majority is identical; users are therfore advised to review the more detailed instructions of the original as this will not be covered here.
+Some specific usage examples can however be found in the 'run_scan.py' script.
+
+As of yet ScanToolsLite includes only the core features & does not support repolarized tables. 
+
+
+Requirements
+
+- python 3.8.5
+	+ os, sys, subprocess, argparse, pandas, math, datetime, time, glob, re, numpy
+
+- bcftools 1.9 # for creating PopKey.csv
+
+- GATK 3.8 # for splitting VCFs
+
+- bedtools 2.29.2 # for finding outliers
+
+- R 3.6.1 # for plotting outliers
+	+ ggplot2
+
+
+
+STEP 1 - Create a ScanToolsLite Object
+
+
+	scantools()
+
+		wrk_dir = </path/to/working_dir>
+		vcf_dir = </path/to/vcf_dir>
+
+N.B. 
+- If no PopKey.csv file is found within the working directory then at this point an interactive prompt will guide users in creating its template (to be completed manually).
+
+
+A non-exhaustive list of the most useful methods for ScanToolsLite objects:
+
+	.pops		returns a list of population names
+	.inds		returns a dictionary of individual sample names indexed by population
+	.sizes		returns a dictionary of population sizes indexed by population
+	.min_ind	returns an integer for the smallest population size
+
+
+
+STEP 2 - Edit Populations (Optional)
+
+
+	project.removePops()
+
+		Required
+
+		to_remove = <List of population names to remove>
+
+
+	project.removeInds()
+
+		Required
+
+		to_remove = <List of individual sample names to remove>
+
+
+	project.combinePops()
+
+		Required
+
+		to_combine = <List of populations names to combine>
+		new_pop = <New Population Name>
+
+
+
+STEP 3 - Split VCFs
+
+	splitVCFs()
+
+		Required
+
+		ref_path = </path/to/reference.fasta>
+		vcf_dir = </path/to/vcf_dir>
+		min_dp = <Integer for minimum depth>
+		mffg =  <Float for maximum fraction of samples with no-call genotypes>
+
+
+		Either/Or					Defaults
+
+		gatk_path = </path/to/GenomeAnalysisTK.jar>	# None
+		conda_env = <Conda Environment Name>		# None
+
+
+		Optional					Defaults
+
+		pops = <List of population names>		# 'all'
+
+
+N.B.
+- Either a path to GenomeAnalysisTK.jar or a Conda environment with GATK installed must be specified; if both are provided then the 'gatk_path' option is used.
+
+
+
+STEP 5 - Calculate Metrics
+
+	calcwpm()
+
+		Required
+
+		table_dir = </path/to/variant_table_directory>
+		window_size = <Integer for window size (bp)>
+		min_snps = <Integer for minimum SNPs per window>
+
+
+		Optional					Defaults
+
+		sample_size = <Integer for downsampling>	# smallest size of listed populations 
+		pops = <List of population names>		# 'all'
+		show_excluded = <True/False>			# False
+
+
+	calcbpm()
+
+
+		Required
+
+		table_dir = </path/to/variant_table_directory>
+		pops = <List of population names>
+		window_size = <Integer for window size (bp)>
+		min_snps = <Integer for minimum SNPs per window>
+
+
+		Optional					Defaults
+
+		show_excluded = <True/False>			# False
+		metrics_prefix = <Output table prefix>		# 'Pop1-vs-Pop2'
+
+
+N.B. 
+- Raw variant tables would previously need to be recoded before this step; this is no longer required as recoding is performed on the fly during calculations.
+- The 'show_excluded' option controls whether regions that do not meet the specified quality thresholds are absent in the output or included as empty lines. 
+- For within-population metrics each population will be downsampled to the same number specified by the 'sample_size' option; by default this is the size of the smallest population specified in the 'pop' option. 
+- Users should be aware that this results in stringent filtering of any no-call sites & so may need to be reduced depending on requirements i.e. how best to balance the total sites examined against a tolerance for no-call sites.
+
+
+
+STEP 6 - Find Outliers
+
+
+    	findoutliers()
+	
+		Required
+
+		metrics_dir = </path/to/bpm_metrics_directory>
+		percentile = <Integer for outlier percentile threshold>
+
+
+		Either/Or					Defaults
+
+		pops = <List of population names>		# None		
+		metrics_prefix = <calcbpm() metrics prefix>	# default calcbpm() prefix	    
+
+
+		Optional					Defaults
+
+		metric = <Metric column header>			# None
+
+		to_intersect = <True/False>			# False
+		gff_path = </path/to/annotation.gff>		# None
+
+		to_plot = <True/False>				# False
+		plot_range = <Integer for plot range (bp)>	# 50000	
+		table_dir = </path/to/variant_table_directory>	# None
+		fai_path = </path/to/reference_index.fai>	# None
+
+
+N.B. 
+- Either 'pop' or 'metric_prefix' must be specified for the relevant bpm metrics to be found. If the 'metric' option is not specified one can be chosen via an interactive prompt that displays those within the specified input metrics (unless only one metric is found in which case that will be used by default). If only the required options are specified then all that will be produced is a list of outlier window coordinates. However, if 'to_intersect' is specified then outlier windows will be intersected with the provided gff file to produce individual window gffs & a list of IDs for any genes/mRNA situated within them. If 'to_plot' is specified then the allele frequency difference (AFD) & the relevant metric for them will also be plotted. The 'pops' option must also be provided with the order of population names determining which will be the minuend (first) or subtrahend (second) in AFD calculations.
+
+
+
+ADDITIONAL INFO
+
+Most steps have further options to control general behaviour:
+
+		keep_intermediates = <True/False>		# False
+		use_scratch = <True/False>			# False
+		scratch_path = </path/to/scratch_dir>		# None
+		overwrite = <True/False>			# False
+		debug = <True/False>				# False
+
+
+N.B. 
+- The 'keep_intermediates' & 'use_scratch' options are mutually exclusive; if both are provided then intermediate files are retained in the output directory.
+
+In-built stage-specific SLURM directives are used at stages where tasks are submitted to the HPCC; users can change these as required via additional options. 
+A Conda environments can also be specified if the software requirements have been installed via this approach.
+
+		partition = <SLURM Partition Name>
+		nodes = <Integer>
+		ntasks = <Integer>
+		memory = <Memory[k|m|g|t]>
+		walltime = <HH:MM:SS>
+		conda_env = <Conda Environment Name>
+		description = <Task description>
+
