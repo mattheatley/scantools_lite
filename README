@@ -1,5 +1,3 @@
-# scantools_lite
-
 READ ME
 
 This software calculates window-based population genetics metrics on a SLURM cluster.
