@@ -11,17 +11,11 @@ As of yet ScanToolsLite includes only the core features & does not support repol
 
 Requirements
 
-- python 3.8.5
-	+ os, sys, subprocess, argparse, pandas, math, datetime, time, glob, re, numpy
-
-- bcftools 1.9 # for creating PopKey.csv
-
-- GATK 3.8 # for splitting VCFs
-
-- bedtools 2.29.2 # for finding outliers
-
-- R 3.6.1 # for plotting outliers
-	+ ggplot2
+	- python 3.8.5; os, sys, subprocess, argparse, pandas, math, datetime, time, glob, re, numpy
+	- bcftools 1.9
+	- GATK 3.8
+	- bedtools 2.29.2
+	- R 3.6.1; ggplot2
 
 
 
