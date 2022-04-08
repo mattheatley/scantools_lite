@@ -103,7 +103,9 @@ def outliers(bpm_metrics, output_dir, percentile, relevant_metric, intersecting=
 
                         for ID in IDs: print(*window, ID, sep='\t', file=output, flush=True) # write window coordinates & feature ids
 
-
+                else:
+                    
+                    gene_IDS = "NONCODING"
 
                 if plotting:
                     
