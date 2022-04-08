@@ -105,7 +105,7 @@ def outliers(bpm_metrics, output_dir, percentile, relevant_metric, intersecting=
 
                 else:
                     
-                    gene_IDs = "NONCODING"
+                    gene_IDs = ["NONCODING"]
 
                 if plotting:
                     
